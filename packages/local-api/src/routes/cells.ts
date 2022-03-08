@@ -12,9 +12,9 @@ export const createCellsRouter = (filename: string, dir: string) => {
   router.use(express.json());
 
   const fullPath = path.join(dir, filename);
+  console.log('got req');
 
   router.get('/cells', async (req, res) => {
-    // req, res
     try {
       const result = await fs.readFile(fullPath, 'utf-8');
       res.send(JSON.parse(result));
@@ -29,7 +29,6 @@ export const createCellsRouter = (filename: string, dir: string) => {
   });
 
   router.post('/cells', async (req, res) => {
-    // req, res
     const { cells }: { cells: Cell[] } = req.body;
 
     await fs.writeFile(fullPath, JSON.stringify(cells), 'utf-8');

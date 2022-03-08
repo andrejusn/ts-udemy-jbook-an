@@ -1,6 +1,5 @@
 import './add-cell.css';
 import { useActions } from '../hooks/use-actions'
-import { build } from 'esbuild-wasm';
 
 interface AddCellProps {
     previousCellId: string | null;
@@ -23,13 +22,11 @@ const AddCell: React.FC<AddCellProps> = ({ previousCellId, forceVisible }) => {
                 className='button is-rounded is-primary is-small'
                 onClick={() => insertCellAfter(previousCellId, 'text')}>
                 <span className='icon is-small'>
-                    <i className='fas fa-minus' />
+                    <i className='fas fa-plus' />
                 </span>
                 <span > Text</span>
             </button>
         </div>
-        {previousCellId}
-
         <div className='divider'></div>
     </div>
 }

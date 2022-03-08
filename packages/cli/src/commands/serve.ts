@@ -17,7 +17,6 @@ export const serveCommand = new Command()
         dir,
         !isProduction
       );
-      // console.log('getting ready');
       console.log(
         `Opened ${filename}. Navigate to http://localhost:${options.port} to edit!`
       );

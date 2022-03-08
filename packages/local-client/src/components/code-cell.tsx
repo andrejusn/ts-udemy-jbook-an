@@ -16,7 +16,6 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
 
     const { updateCell, createBundle } = useActions();
     const bundle = useTypedSelector((state) => state.bundles[cell.id]);
-    // console.log(bundle);
     const cumulativeCode = useCumulativeCode(cell.id);
 
     useEffect(() => {
@@ -38,7 +37,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
 
     return <Resizable direction={'vertical'}>
         <div style={{
-            height: 'calc(100%-8px)',
+            height: 'calc(100% - 10px)',
             display: 'flex',
             flexDirection: 'row'
         }}>
@@ -48,8 +47,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                     onChange={(value) => updateCell(cell.id, value)}
                 />
             </Resizable>
-            <div className='progress-cover'>
-
+            <div className='progress-wrapper'>
                 {!bundle || bundle.loading ? (
                     <div className='progress-cover'>
                         <progress

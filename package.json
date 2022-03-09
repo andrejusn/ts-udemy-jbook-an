@@ -5,5 +5,8 @@
     "lerna": "^3.22.1"
   },
   "scripts": {
-    "start": "lerna run start --parallel"}
+    "start": "lerna run start --parallel",
+    "initDeveloping": "npm install --prefix ./packages/local-client/ ./packages/local-client/ && npm install --prefix ./packages/local-api/ ./packages/local-api/ && npm install --prefix ./packages/cli/ ./packages/cli/ && npm install && npm start",
+    "initUse" : "node ./packages/cli/dist/index.js serve"
+  }
 }

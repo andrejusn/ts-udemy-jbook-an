@@ -10,6 +10,7 @@ const CellList: React.FC = () => {
         order.map((id) => data[id])
     );
 
+    cells.forEach(c => console.log(c.content));
     const renderedCells = cells.map(cell => {
         return <React.Fragment key={cell.id}>
             <CellListItem cell={cell} />

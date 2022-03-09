@@ -12,7 +12,6 @@ export const createCellsRouter = (filename: string, dir: string) => {
   router.use(express.json());
 
   const fullPath = path.join(dir, filename);
-  console.log('got req');
 
   router.get('/cells', async (req, res) => {
     try {

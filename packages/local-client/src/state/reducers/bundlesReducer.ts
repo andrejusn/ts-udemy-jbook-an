@@ -1,6 +1,5 @@
 import { ActionType } from '../action-types';
 import { Action } from '../actions';
-import { Cell } from '../cell';
 import produce from 'immer';
 
 interface BundlesState {
@@ -13,17 +12,6 @@ const reducer = produce(
   (state: BundlesState = initialState, action: Action): BundlesState => {
     switch (action.type) {
       case ActionType.BUNDLE_START:
-        // console.log('moving cell: ', action.payload);
-
-        // const { direction } = action.payload;
-        // const index = state.order.findIndex((id) => id === action.payload.id);
-        // const targetIndex = direction === 'up' ? index - 1 : index + 1;
-        // if (targetIndex < 0 || targetIndex > state.order.length - 1) {
-        //   return state;
-        // }
-
-        // state.order[index] = state.order[targetIndex];
-        // state.order[targetIndex] = action.payload.id;
         state[action.payload.cellId] = {
           loading: true,
           code: '',

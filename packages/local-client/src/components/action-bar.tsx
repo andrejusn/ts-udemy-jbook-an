@@ -3,11 +3,27 @@ import './action-bar.css'
 
 interface ActionBarProps {
     id: string;
+    openInNewWindow?: () => void;
 }
-const ActionBar: React.FC<ActionBarProps> = ({ id }) => {
+
+const ActionBar: React.FC<ActionBarProps> = ({ id, openInNewWindow }) => {
     const { moveCell, deleteCell } = useActions();
 
     return <div className="action-bar">
+        {openInNewWindow && <button
+            className="button is-primary is-small"
+            onClick={() => {
+                if (openInNewWindow) {
+                    openInNewWindow()
+                }
+                console.log(openInNewWindow)
+            }}
+        >
+            <span className="icon">
+                <i className="fa-solid fa-up-right-and-down-left-from-center"></i>
+            </span>
+        </button>}
+
         <button
             className="button is-primary is-small"
             onClick={() => moveCell(id, 'up')}

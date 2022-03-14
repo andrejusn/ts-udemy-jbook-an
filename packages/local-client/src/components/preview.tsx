@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
 import './preview.css'
+import { useEffect, useRef } from "react";
 
 interface PreviewProps {
+  id: string;
   code: string;
   bundlingStatus: string;
 }
@@ -35,7 +36,7 @@ const html = `
 </html>
 `;
 
-const Preview: React.FC<PreviewProps> = ({ code, bundlingStatus }) => {
+const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus }) => {
   const iframe = useRef<any>();
 
   useEffect(() => {
@@ -45,10 +46,11 @@ const Preview: React.FC<PreviewProps> = ({ code, bundlingStatus }) => {
     }, 50);
   }, [code]);
 
-  // console.log(bundlingStatus);
   return <div className="preview-wrapper">
     <iframe
-      title='preview'
+      id={`pr_${id}`}
+      title={`code${id}`}
+      name={`preview_${id}`}
       ref={iframe}
       srcDoc={html}
       sandbox='allow-scripts'

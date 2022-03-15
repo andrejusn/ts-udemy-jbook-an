@@ -42,9 +42,12 @@ const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus, isFullWindo
 
   useEffect(() => {
     iframe.current.srcdoc = html;
+
     setTimeout(() => {
       iframe.current.contentWindow.postMessage(code, '*');
-    }, 50);
+      // increased delay so that Firefox is done with window mutation in time, Chrome was good with 50
+    }, 500);
+
   }, [code]);
 
   const styleByWindowed = isFullWindow ? { width: '100%', height: '97vh', border: 'none' } : undefined

@@ -10,7 +10,6 @@ import { useCumulativeCode } from '../hooks/use-cumulative-code'
 import ActionBar from './action-bar';
 import WindowedPreview from './windowed-preview';
 
-
 interface CodeCellProps {
     cell: Cell
 }
@@ -21,14 +20,14 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     const bundle = useTypedSelector((state) => state.bundles[cell.id]);
     const cumulativeCode = useCumulativeCode(cell.id);
 
-    const [openInWindow, setOpenInWindow] = useState(false);
+    const [previewInWindow, setPreviewInWindow] = useState(false);
 
     function openInNewWindow() {
-        setOpenInWindow(true);
+        setPreviewInWindow(true);
     }
 
-    function closedInNewWindow() {
-        setOpenInWindow(false);
+    function closeNewWindow() {
+        setPreviewInWindow(false);
     }
 
     useEffect(() => {
@@ -48,12 +47,11 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cell.id, cumulativeCode, createBundle]);
 
-
     return <>
         <div className='action-bar-wrapper'>
-            <ActionBar id={cell.id} openInNewWindow={openInNewWindow} />
+            <ActionBar id={cell.id} openInNewWindow={openInNewWindow} isOpen={previewInWindow} />
         </div>
-        {openInWindow && <WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={() => closedInNewWindow()} />}
+        {previewInWindow && (<WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={closeNewWindow} />)}
         <Resizable direction={'vertical'}>
             <div style={{
                 height: 'calc(100% - 10px)',

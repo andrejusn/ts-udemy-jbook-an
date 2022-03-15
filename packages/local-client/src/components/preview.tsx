@@ -5,6 +5,7 @@ interface PreviewProps {
   id: string;
   code: string;
   bundlingStatus: string;
+  isFullWindow?: boolean;
 }
 
 const html = `
@@ -36,7 +37,7 @@ const html = `
 </html>
 `;
 
-const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus }) => {
+const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus, isFullWindow }) => {
   const iframe = useRef<any>();
 
   useEffect(() => {
@@ -46,6 +47,8 @@ const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus }) => {
     }, 50);
   }, [code]);
 
+  const styleByWindowed = isFullWindow ? { width: '100%', height: '97vh', border: 'none' } : undefined
+
   return <div className="preview-wrapper">
     <iframe
       id={`pr_${id}`}
@@ -54,6 +57,8 @@ const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus }) => {
       ref={iframe}
       srcDoc={html}
       sandbox='allow-scripts'
+      style={styleByWindowed}
+      allow={styleByWindowed ? "fullscreen" : ''}
     />
     {bundlingStatus && <div className="preview-error">{bundlingStatus}</div>}
   </div>

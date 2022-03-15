@@ -21,15 +21,14 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     const bundle = useTypedSelector((state) => state.bundles[cell.id]);
     const cumulativeCode = useCumulativeCode(cell.id);
 
-    const [open, setOpen] = useState(false);
+    const [openInWindow, setOpenInWindow] = useState(false);
 
     function openInNewWindow() {
-        console.log('clikced in cell, ', open)
-        setOpen(true);
+        setOpenInWindow(true);
     }
 
     function closedInNewWindow() {
-        setOpen(false);
+        setOpenInWindow(false);
     }
 
     useEffect(() => {
@@ -54,8 +53,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
         <div className='action-bar-wrapper'>
             <ActionBar id={cell.id} openInNewWindow={openInNewWindow} />
         </div>
-        {open && bundle && <WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={() => closedInNewWindow()} />
-        }
+        {openInWindow && <WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={() => closedInNewWindow()} />}
         <Resizable direction={'vertical'}>
             <div style={{
                 height: 'calc(100% - 10px)',

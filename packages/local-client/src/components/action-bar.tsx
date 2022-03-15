@@ -12,12 +12,7 @@ const ActionBar: React.FC<ActionBarProps> = ({ id, openInNewWindow }) => {
     return <div className="action-bar">
         {openInNewWindow && <button
             className="button is-primary is-small"
-            onClick={() => {
-                if (openInNewWindow) {
-                    openInNewWindow()
-                }
-                console.log(openInNewWindow)
-            }}
+            onClick={openInNewWindow}
         >
             <span className="icon">
                 <i className="fa-solid fa-up-right-and-down-left-from-center"></i>

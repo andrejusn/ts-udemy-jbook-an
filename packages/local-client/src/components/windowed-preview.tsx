@@ -2,8 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Preview from "./preview";
 
+interface SeparateWindowPreviewProps {
+    syncAsClosed: () => void;
+    cellId: string;
+    bundle: {
+        loading: boolean;
+        code: string;
+        error: string;
+    } | undefined
+}
 
-const RenderInWindow = (props: any) => {
+const WindowedPreview = ({ cellId, bundle, syncAsClosed }: SeparateWindowPreviewProps) => {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const newWindow = useRef(window);
 
@@ -12,47 +21,35 @@ const RenderInWindow = (props: any) => {
         setContainer(div);
     }, []);
 
+    console.log('rendering')
 
     useEffect(() => {
         if (container) {
             (newWindow as any).current = window.open(
                 "",
                 "",
-                "width=1280,height=760,left=200,top=200"
+                // `preview_${cellId}`, 
+                "width=800,height=600,left=400,top=400"
             );
             newWindow.current.document.body.appendChild(container);
             const curWindow = newWindow.current;
-
+            newWindow.current.addEventListener('beforeunload', () => {
+                syncAsClosed();
+            });
             return () => curWindow.close();
         }
     }, [container]);
 
-    return container && createPortal(props.children, container);
+    return container && createPortal(
+        <>
+            {!bundle || bundle.loading ?
+                (<div className='progress-cover'>
+                    <progress className='progress is-small is-primary' max="100">Loading</progress>
+                </div>)
+                :
+                <Preview id={cellId} code={bundle.code} bundlingStatus={bundle.error} isFullWindow />}
+        </>
+        , container);
 };
-
-
-interface SeparateWindowPreviewProps {
-    syncAsClosed: () => void;
-    cellId: string;
-    bundle: {
-        loading: boolean;
-        code: string;
-        error: string;
-    }
-}
-
-const WindowedPreview: React.FC<SeparateWindowPreviewProps> = ({ syncAsClosed, cellId, bundle }) => {
-
-    useEffect(() => {
-        return () => {
-            console.log('closing preview window')
-            syncAsClosed();
-        }
-    }, []);
-
-    return <RenderInWindow>
-        <Preview id={cellId} code={bundle.code} bundlingStatus={bundle.error} />
-    </RenderInWindow>
-}
 
 export default WindowedPreview;

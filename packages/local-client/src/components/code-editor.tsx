@@ -2,15 +2,16 @@ import './code-editor.css';
 import MonacoEditor, { EditorDidMount } from '@monaco-editor/react';
 import prettier from 'prettier';
 import parser from 'prettier/parser-babel';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 
 interface CodeEditorProps {
     initialValue: string;
     onChange: (value: string) => void;
+    setEditorHeight: (heightInPx: number) => void;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, setEditorHeight }) => {
     const editorRef = useRef<any>();
 
     const onEditorDidMount: EditorDidMount = (getValue, monacoEditor) => {
@@ -34,6 +35,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
 
         editorRef.current.setValue(formatted)
     }
+
+    useEffect(() => {
+        setEditorHeight(editorRef?.current?.getScrollHeight())
+    }, [editorRef, setEditorHeight])
 
     return (<div className='editor-wrapper'>
         <button className="button button-format is-primary is-small" onClick={onFormatClick}>Format</button>

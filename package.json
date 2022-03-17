@@ -8,5 +8,10 @@
     "start": "lerna run start --parallel",
     "initDeveloping": "npm install --prefix ./packages/local-client/ ./packages/local-client/ && npm install --prefix ./packages/local-api/ ./packages/local-api/ && npm install --prefix ./packages/cli/ ./packages/cli/ && npm install && npm start",
     "initUse": "node ./packages/cli/dist/index.js serve"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.17.7",
+    "@babel/traverse": "^7.17.3",
+    "monaco-jsx-highlighter": "^2.0.4"
   }
 }

@@ -19,6 +19,8 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
 
     const { updateCell, createBundle } = useActions();
     const bundle = useTypedSelector((state) => state.bundles[cell.id]);
+    const isLightTheme = useTypedSelector(({ theme: { lightTheme } }) => lightTheme);
+
     const cumulativeCode = useCumulativeCode(cell.id);
 
     const [open, setOpen] = useState(false);
@@ -66,6 +68,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                     <CodeEditor
                         initialValue={cell.content}
                         onChange={(value) => updateCell(cell.id, value)}
+                        lightTheme={isLightTheme}
                     />
                 </Resizable>
                 <div className='progress-wrapper'>

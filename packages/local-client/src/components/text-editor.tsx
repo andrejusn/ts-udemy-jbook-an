@@ -2,6 +2,7 @@ import MDEditor from "@uiw/react-md-editor";
 import { useState, useEffect, useRef } from "react";
 import { useActions } from "../hooks/use-actions";
 import { Cell } from "../state";
+import ActionBar from "./action-bar";
 import './text-editor.css';
 
 interface TextEditorProps {
@@ -28,20 +29,25 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
     }, []);
 
     if (editing) {
-        return <div ref={ref} className="text-editor">
-            <MDEditor
-                value={cell.content}
-                onChange={(v) => updateCell(cell.id, v || '')} />
-        </div>
+        return <>
+            <div ref={ref} className="text-editor">
+                <MDEditor
+                    value={cell.content}
+                    onChange={(v) => updateCell(cell.id, v || '')} />
+            </div>
+            <ActionBar id={cell.id} />
+        </>
     }
     else {
-        return <div className="text-editor card" onClick={() => setEditing(true)}>
+        return <><div className="text-editor card" onClick={() => setEditing(true)}>
             <div className="card-content">
                 <MDEditor.Markdown
                     source={cell.content || 'Click to edit'}
                 />
             </div>
         </div>
+            <ActionBar id={cell.id} />
+        </>
     }
 }
 

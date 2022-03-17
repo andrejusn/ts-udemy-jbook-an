@@ -19,6 +19,11 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     const { updateCell, createBundle } = useActions();
     const bundle = useTypedSelector((state) => state.bundles[cell.id]);
     const cumulativeCode = useCumulativeCode(cell.id);
+    const [editorHeight, setEditorHeight] = useState(200)
+
+    function updateHeight(heightInPx: number) {
+        setEditorHeight(heightInPx);
+    }
 
     const [previewInWindow, setPreviewInWindow] = useState(false);
 
@@ -54,7 +59,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
         {previewInWindow && (<WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={closeNewWindow} />)}
         <Resizable direction={'vertical'}>
             <div style={{
-                height: 'calc(100% - 10px)',
+                height: `${editorHeight}px`,
                 display: 'flex',
                 flexDirection: 'row'
             }}>
@@ -62,6 +67,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                     <CodeEditor
                         initialValue={cell.content}
                         onChange={(value) => updateCell(cell.id, value)}
+                        setEditorHeight={updateHeight}
                     />
                 </Resizable>
                 <div className='progress-wrapper'>

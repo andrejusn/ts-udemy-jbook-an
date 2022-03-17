@@ -1,16 +1,28 @@
 import './cell-list.css';
 import React from 'react';
-import { useTypedSelector } from '../hooks/use-typed-selector';
-import CellListItem from './cell-list-item';
-import AddCell from './add-cell'
-import { Cell } from '../state';
 
 const InfoSection: React.FC = () => {
 
-    return <div className='hero-body'>
-        Copy this code to the Code cell:
-        <pre>
-            {`import 'bulmaswatch/superhero/bulmaswatch.min.css';
+    return <div><div className='hero is-dark'>
+        <div className='hero-body'>
+            <h1 className='title'>JSX Note</h1>
+            <h2 className='subtitle'>Write, preview & share React code!</h2>
+        </div>
+    </div >
+        <div className='content'>
+            <figure>
+                <figcaption>Instructions: </figcaption>
+                <ul>
+                    <li>open code editor cell or text editor cell by clicking the buttons</li>
+                    <li>arrange the order by moving up or down, or inserting a cell before</li>
+                    <li>use show() function to render the component/function/variable/value to screen</li>
+                    <li>reuse components/values from previous (from top to bottom) cells</li>
+                    <li>import libraries, styles, etc.</li>
+                    <li>find all the contents saved in the notebook.js (or a manually specified) file, in the convenient format</li>
+                </ul>
+            </figure>
+            <pre>
+                {`import 'bulmaswatch/superhero/bulmaswatch.min.css';
 import React from 'react';
 
 const name = 'Lucky';
@@ -24,8 +36,10 @@ const Title = ({name}) => {
     }
 
 show(<Title name={name} />);`}
-        </pre>
+            </pre>
+        </div>
     </div>
+
 }
 
 export default InfoSection;

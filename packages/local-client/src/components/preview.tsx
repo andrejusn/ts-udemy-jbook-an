@@ -5,6 +5,7 @@ interface PreviewProps {
   id: string;
   code: string;
   bundlingStatus: string;
+  isFullWindow?: boolean;
 }
 
 const html = `
@@ -36,15 +37,20 @@ const html = `
 </html>
 `;
 
-const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus }) => {
+const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus, isFullWindow }) => {
   const iframe = useRef<any>();
 
   useEffect(() => {
     iframe.current.srcdoc = html;
+
     setTimeout(() => {
       iframe.current.contentWindow.postMessage(code, '*');
-    }, 50);
+      // increased delay so that Firefox is done with window mutation in time, Chrome was good with 50
+    }, 500);
+
   }, [code]);
+
+  const styleByWindowed = isFullWindow ? { width: '100%', height: '97vh', border: 'none' } : undefined
 
   return <div className="preview-wrapper">
     <iframe
@@ -54,6 +60,8 @@ const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus }) => {
       ref={iframe}
       srcDoc={html}
       sandbox='allow-scripts'
+      style={styleByWindowed}
+      allow={styleByWindowed ? "fullscreen" : ''}
     />
     {bundlingStatus && <div className="preview-error">{bundlingStatus}</div>}
   </div>

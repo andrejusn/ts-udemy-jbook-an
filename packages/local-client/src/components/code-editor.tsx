@@ -1,29 +1,51 @@
 import './code-editor.css';
-import MonacoEditor, { EditorDidMount } from '@monaco-editor/react';
+import MonacoEditor from '@monaco-editor/react';
 import prettier from 'prettier';
 import parser from 'prettier/parser-babel';
-import { useRef } from 'react';
-
+import { useEffect, useRef } from 'react';
+import MonacoJSXHighlighter from 'monaco-jsx-highlighter';
+import { parse } from "@babel/parser";
+import traverse from "@babel/traverse";
 
 interface CodeEditorProps {
     initialValue: string;
     onChange: (value: string) => void;
+    lightTheme?: boolean;
+    setEditorHeight: (heightInPx: number) => void;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, lightTheme, setEditorHeight }) => {
     const editorRef = useRef<any>();
+    const monacoRef = useRef<any>();
+    const monacoJSXHighlighterRef = useRef<any>();
 
-    const onEditorDidMount: EditorDidMount = (getValue, monacoEditor) => {
-        editorRef.current = monacoEditor;
-        monacoEditor.onDidChangeModelContent(() => {
-            onChange(getValue());
-        });
+    //   editor: monaco.editor.IStandaloneCodeEditor,   monaco: Monaco,
+    const handleEditorDidMount = (editor: any, monaco: any) => {
+        editorRef.current = editor;
+        monacoRef.current = monaco;
+    }
 
-        monacoEditor.getModel()?.updateOptions({ tabSize: 2 });
+    useEffect(() => {
+        if (editorRef.current && monacoRef.current) {
+            monacoJSXHighlighterRef.current = new MonacoJSXHighlighter(
+                monacoRef.current, parse, traverse, editorRef.current
+            );
+            monacoJSXHighlighterRef.current.highlightOnDidChangeModelContent();
+            monacoJSXHighlighterRef.current.addJSXCommentCommand();
+            monacoJSXHighlighterRef.current.addJSXCommentCommand();
+
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [editorRef.current, monacoRef.current])
+
+    //    value: string | undefined,   ev: monaco.editor.IModelContentChangedEvent,
+    const handleChange = (value: any, event: any) => {
+        onChange(value);
     }
 
     const onFormatClick = () => {
-        const unformatted = editorRef.current.getModel().getValue();
+        const unformatted = editorRef.current.getValue();
+
         const formatted = prettier.format(unformatted, {
             parser: 'babel',
             plugins: [parser],
@@ -35,14 +57,19 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
         editorRef.current.setValue(formatted)
     }
 
+    useEffect(() => {
+        setEditorHeight(editorRef?.current?.getScrollHeight())
+    }, [editorRef, setEditorHeight])
+
     return (<div className='editor-wrapper'>
         <button className="button button-format is-primary is-small" onClick={onFormatClick}>Format</button>
         <MonacoEditor
             value={initialValue}
-            editorDidMount={onEditorDidMount}
+            onMount={handleEditorDidMount}
+            onChange={handleChange}
             language="javascript"
             height="100%"
-            theme="dark"
+            theme={lightTheme ? 'light' : 'vs-dark'}
             options={{
                 wordWrap: 'on',
                 minimap: { enabled: false },
@@ -51,7 +78,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
                 lineNumbersMinChars: 3,
                 fontSize: 16,
                 scrollBeyondLastLine: false,
-                automaticLayout: true
+                automaticLayout: true,
+                tabSize: 2
             }} />
     </div>);
 }

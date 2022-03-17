@@ -67,6 +67,10 @@ export interface SaveCellsErrorAction {
   payload: string;
 }
 
+export interface ToggleThemeAction {
+  type: ActionType.TOGGLE_THEME;
+}
+
 export type Action =
   | MoveCellAction
   | DeleteCellAction
@@ -77,6 +81,7 @@ export type Action =
   | FetchCellsAction
   | FetchCellsCompleteAction
   | FetchCellsErrorAction
-  | SaveCellsErrorAction;
+  | SaveCellsErrorAction
+  | ToggleThemeAction;
 
 export type Direction = 'up' | 'down';

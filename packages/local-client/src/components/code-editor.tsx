@@ -2,7 +2,7 @@ import './code-editor.css';
 import MonacoEditor from '@monaco-editor/react';
 import prettier from 'prettier';
 import parser from 'prettier/parser-babel';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MonacoJSXHighlighter from 'monaco-jsx-highlighter';
 import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
@@ -14,6 +14,7 @@ interface CodeEditorProps {
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
     const editorRef = useRef<any>();
+    const monacoRef = useRef<any>();
     const monacoJSXHighlighterRef = useRef<any>();
 
     const [isEditorReady, setIsEditorReady] = useState(false);
@@ -23,22 +24,22 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
     //   editor: monaco.editor.IStandaloneCodeEditor,   monaco: Monaco,
     const handleEditorDidMount = (editor: any, monaco: any) => {
         editorRef.current = editor;
+        monacoRef.current = monaco;
     }
 
-
-
+    console.log(editorRef.current)
     useEffect(() => {
-        // Instantiate the highlighter
-        monacoJSXHighlighterRef.current = new MonacoJSXHighlighter(
-            MonacoEditor, parse, traverse, monacoJSXHighlighterRef.current
-        );
+        if (editorRef.current && monacoRef.current) {
+            monacoJSXHighlighterRef.current = new MonacoJSXHighlighter(
+                monacoRef.current, parse, traverse, editorRef.current
+            );
+            monacoJSXHighlighterRef.current.highlightOnDidChangeModelContent();
+            monacoJSXHighlighterRef.current.addJSXCommentCommand();
+            monacoJSXHighlighterRef.current.addJSXCommentCommand();
 
-        monacoJSXHighlighterRef.current.highlightOnDidChangeModelContent(100);
-        monacoJSXHighlighterRef.current.addJSXCommentCommand();
-    }, [editorRef])
-
-
-    console.log(monacoJSXHighlighterRef.current)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [editorRef.current, monacoRef.current])
 
     //    value: string | undefined,   ev: monaco.editor.IModelContentChangedEvent,
     const handleChange = (value: any, event: any) => {
@@ -67,7 +68,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
             onChange={handleChange}
             language="javascript"
             height="100%"
-            theme="dark"
+            theme="light"
             options={{
                 wordWrap: 'on',
                 minimap: { enabled: false },

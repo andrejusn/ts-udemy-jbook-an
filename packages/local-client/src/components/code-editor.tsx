@@ -1,5 +1,5 @@
 import './code-editor.css';
-import MonacoEditor, { EditorDidMount } from '@monaco-editor/react';
+import MonacoEditor from '@monaco-editor/react';
 import prettier from 'prettier';
 import parser from 'prettier/parser-babel';
 import { useRef } from 'react';
@@ -13,17 +13,20 @@ interface CodeEditorProps {
 const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
     const editorRef = useRef<any>();
 
-    const onEditorDidMount: EditorDidMount = (getValue, monacoEditor) => {
-        editorRef.current = monacoEditor;
-        monacoEditor.onDidChangeModelContent(() => {
-            onChange(getValue());
-        });
+    //   editor: monaco.editor.IStandaloneCodeEditor,   monaco: Monaco,
+    const handleEditorDidMount = (editor: any, monaco: any) => {
+        editorRef.current = editor;
+    }
 
-        monacoEditor.getModel()?.updateOptions({ tabSize: 2 });
+    //    value: string | undefined,   ev: monaco.editor.IModelContentChangedEvent,
+    const handleChange = (value: any, event: any) => {
+        onChange(value);
     }
 
     const onFormatClick = () => {
-        const unformatted = editorRef.current.getModel().getValue();
+        console.log(editorRef.current)
+
+        const unformatted = editorRef.current.getValue();
         const formatted = prettier.format(unformatted, {
             parser: 'babel',
             plugins: [parser],
@@ -39,7 +42,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
         <button className="button button-format is-primary is-small" onClick={onFormatClick}>Format</button>
         <MonacoEditor
             value={initialValue}
-            editorDidMount={onEditorDidMount}
+            onMount={handleEditorDidMount}
+            onChange={handleChange}
             language="javascript"
             height="100%"
             theme="dark"
@@ -51,7 +55,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
                 lineNumbersMinChars: 3,
                 fontSize: 16,
                 scrollBeyondLastLine: false,
-                automaticLayout: true
+                automaticLayout: true,
+                tabSize: 2
             }} />
     </div>);
 }

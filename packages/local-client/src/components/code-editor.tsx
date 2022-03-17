@@ -10,11 +10,11 @@ import traverse from "@babel/traverse";
 interface CodeEditorProps {
     initialValue: string;
     onChange: (value: string) => void;
-    lightTheme?: boolean;
+    darkTheme?: boolean;
     setEditorHeight: (heightInPx: number) => void;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, lightTheme, setEditorHeight }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkTheme, setEditorHeight }) => {
     const editorRef = useRef<any>();
     const monacoRef = useRef<any>();
     const monacoJSXHighlighterRef = useRef<any>();
@@ -69,7 +69,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, lightTh
             onChange={handleChange}
             language="javascript"
             height="100%"
-            theme={lightTheme ? 'light' : 'vs-dark'}
+            theme={darkTheme ? 'vs-dark' : 'light'}
             options={{
                 wordWrap: 'on',
                 minimap: { enabled: false },

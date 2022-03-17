@@ -20,7 +20,7 @@
     "@jsnote-an/local-client": "^1.0.1"
   },
   "devDependencies": {
-    "@jsnote-an/local-api": "file:../local-api/dist/src",
+    "@jsnote-an/local-api": "^1.0.1",
     "@types/node": "^17.0.21",
     "commander": "^9.0.0",
     "esbuild": "0.8.26",

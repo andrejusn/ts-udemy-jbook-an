@@ -3,18 +3,18 @@ import { Action } from '../actions';
 import produce from 'immer';
 
 interface ThemeState {
-  lightTheme: boolean;
+  darkTheme: boolean;
 }
 
 const initialState: ThemeState = {
-  lightTheme: false,
+  darkTheme: true,
 };
 
 const reducer = produce(
   (state: ThemeState = initialState, action: Action): ThemeState => {
     switch (action.type) {
       case ActionType.TOGGLE_THEME:
-        state.lightTheme = !state.lightTheme;
+        state.darkTheme = !state.darkTheme;
         return state;
       default:
         return state;

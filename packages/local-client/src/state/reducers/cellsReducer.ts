@@ -19,6 +19,34 @@ const initialState: CellsState = {
   data: {},
 };
 
+const cell1: Cell = {
+  content: 'const firstVariable = "I\'m a string!!!";\nshow(firstVariable);',
+  type: 'code',
+  id: 'DEMO-CODE-1',
+};
+const cell2: Cell = {
+  content:
+    "I'm a text cell, you can write documentation in me.\n\n\n- If you hovered over a code cell below, the button will appear that allows to format and pretify your code!",
+  type: 'text',
+  id: 'DEMO-CODE-2',
+};
+const cell3: Cell = {
+  content: `import 'bulmaswatch/superhero/bulmaswatch.min.css';
+import React from 'react';
+const FirstComponent = ({name}) => {
+const [count, setCount] = React.useState(0)
+return(<div>
+ <h1 className="title">It's me, {name}!</h1>
+ <h2 className="subtitle">Yes, and you are a {typeof name}</h2>
+ <a className="button is-info is-rounded" onClick={()=> setCount(count + 1)}>I am clicked this many times: {count}</a>
+ </div>);
+}
+  
+  show(<FirstComponent name={firstVariable} />);`,
+  type: 'code',
+  id: 'DEMO-CODE-3',
+};
+
 const reducer = produce(
   (state: CellsState = initialState, action: Action): CellsState => {
     switch (action.type) {
@@ -93,6 +121,30 @@ const reducer = produce(
 
       case ActionType.SAVE_CELLS_ERROR: {
         state.error = action.payload;
+        return state;
+      }
+
+      case ActionType.CREATE_DEMO_NOTES: {
+        state.data[cell1.id] = cell1;
+        state.data[cell2.id] = cell2;
+        state.data[cell3.id] = cell3;
+
+        state.order.unshift(cell3.id);
+        state.order.unshift(cell2.id);
+        state.order.unshift(cell1.id);
+
+        return state;
+      }
+
+      case ActionType.REMOVE_DEMO_NOTES: {
+        delete state.data[cell1.id];
+        delete state.data[cell2.id];
+        delete state.data[cell3.id];
+
+        state.order = state.order.filter(
+          (id) => id !== cell1.id && id !== cell2.id && id !== cell3.id
+        );
+
         return state;
       }
 

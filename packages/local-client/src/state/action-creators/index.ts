@@ -7,6 +7,9 @@ import {
   InsertCellAfterAction,
   UpdateCellAction,
   Action,
+  ToggleThemeAction,
+  CreateDemoNotesAction,
+  RemoveDemoNotesAction,
 } from '../actions';
 import { Cell, CellTypes } from '../cell';
 import { Dispatch } from 'redux';
@@ -98,5 +101,23 @@ export const saveCells = () => {
         payload: err.message,
       });
     }
+  };
+};
+
+export const toggleTheme = (): ToggleThemeAction => {
+  return {
+    type: ActionType.TOGGLE_THEME,
+  };
+};
+
+export const createDemoNotes = (): CreateDemoNotesAction => {
+  return {
+    type: ActionType.CREATE_DEMO_NOTES,
+  };
+};
+
+export const removeDemoNotes = (): RemoveDemoNotesAction => {
+  return {
+    type: ActionType.REMOVE_DEMO_NOTES,
   };
 };

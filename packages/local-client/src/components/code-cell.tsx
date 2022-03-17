@@ -10,7 +10,6 @@ import { useCumulativeCode } from '../hooks/use-cumulative-code'
 import ActionBar from './action-bar';
 import WindowedPreview from './windowed-preview';
 
-
 interface CodeCellProps {
     cell: Cell
 }
@@ -22,16 +21,20 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     const isLightTheme = useTypedSelector(({ theme: { lightTheme } }) => lightTheme);
 
     const cumulativeCode = useCumulativeCode(cell.id);
+    const [editorHeight, setEditorHeight] = useState(200)
 
-    const [open, setOpen] = useState(false);
-
-    function openInNewWindow() {
-        console.log('clikced in cell, ', open)
-        setOpen(true);
+    function updateHeight(heightInPx: number) {
+        setEditorHeight(heightInPx);
     }
 
-    function closedInNewWindow() {
-        setOpen(false);
+    const [previewInWindow, setPreviewInWindow] = useState(false);
+
+    function openInNewWindow() {
+        setPreviewInWindow(true);
+    }
+
+    function closeNewWindow() {
+        setPreviewInWindow(false);
     }
 
     useEffect(() => {
@@ -51,16 +54,14 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cell.id, cumulativeCode, createBundle]);
 
-
     return <>
         <div className='action-bar-wrapper'>
-            <ActionBar id={cell.id} openInNewWindow={openInNewWindow} />
+            <ActionBar id={cell.id} openInNewWindow={openInNewWindow} isOpen={previewInWindow} />
         </div>
-        {open && bundle && <WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={() => closedInNewWindow()} />
-        }
+        {previewInWindow && (<WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={closeNewWindow} />)}
         <Resizable direction={'vertical'}>
             <div style={{
-                height: 'calc(100% - 10px)',
+                height: `${editorHeight}px`,
                 display: 'flex',
                 flexDirection: 'row'
             }}>
@@ -69,6 +70,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                         initialValue={cell.content}
                         onChange={(value) => updateCell(cell.id, value)}
                         lightTheme={isLightTheme}
+                        setEditorHeight={updateHeight}
                     />
                 </Resizable>
                 <div className='progress-wrapper'>

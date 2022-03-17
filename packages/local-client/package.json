@@ -8,6 +8,9 @@
     "build"
   ],
   "devDependencies": {
+    "@babel/parser": "^7.17.7",
+    "@babel/traverse": "^7.17.3",
+    "monaco-jsx-highlighter": "^2.0.4",
     "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/fontawesome-free": "^6.0.0",
     "@monaco-editor/react": "4.3.1",
@@ -64,10 +67,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "dependencies": {
-    "@babel/parser": "^7.17.7",
-    "@babel/traverse": "^7.17.3",
-    "monaco-jsx-highlighter": "^2.0.4"
   }
 }

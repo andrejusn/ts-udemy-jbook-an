@@ -11,6 +11,7 @@ const App = () => {
   return <div>
     <Provider store={store}>
       <InfoSection />
+
       <CellList />
     </Provider>
   </div>;

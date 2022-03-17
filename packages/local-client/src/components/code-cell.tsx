@@ -18,6 +18,8 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
 
     const { updateCell, createBundle } = useActions();
     const bundle = useTypedSelector((state) => state.bundles[cell.id]);
+    const isLightTheme = useTypedSelector(({ theme: { lightTheme } }) => lightTheme);
+
     const cumulativeCode = useCumulativeCode(cell.id);
     const [editorHeight, setEditorHeight] = useState(200)
 
@@ -67,6 +69,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                     <CodeEditor
                         initialValue={cell.content}
                         onChange={(value) => updateCell(cell.id, value)}
+                        lightTheme={isLightTheme}
                         setEditorHeight={updateHeight}
                     />
                 </Resizable>

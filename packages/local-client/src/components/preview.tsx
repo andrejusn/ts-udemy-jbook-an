@@ -44,7 +44,9 @@ const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus, isFullWindo
     iframe.current.srcdoc = html;
 
     setTimeout(() => {
-      iframe.current.contentWindow.postMessage(code, '*');
+      if (iframe.current) {
+        iframe.current.contentWindow.postMessage(code, '*');
+      }
       // increased delay so that Firefox is done with window mutation in time, Chrome was good with 50
     }, 500);
 

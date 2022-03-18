@@ -16,7 +16,7 @@ const ActionBar: React.FC<ActionBarProps> = ({ id, openInNewWindow, isOpen }) =>
             onClick={openInNewWindow}
         >
             <span className="icon">
-                <i className="fa-solid fa-up-right-and-down-left-from-center"></i>
+                <i className="fa-solid fa-up-right-and-down-left-from-center">window</i>
             </span>
         </button>}
 
@@ -24,19 +24,19 @@ const ActionBar: React.FC<ActionBarProps> = ({ id, openInNewWindow, isOpen }) =>
             className="button is-primary is-small"
             onClick={() => moveCell(id, 'up')}
         >
-            <span className="icon"><i className="fas fa-arrow-up"></i></span>
+            <span className="icon">up<i className="fas fa-arrow-up"></i></span>
         </button>
 
         <button
             className="button is-primary is-small"
             onClick={() => moveCell(id, 'down')}>
-            <span className="icon"><i className="fas fa-arrow-down"></i></span>
+            <span className="icon">down<i className="fas fa-arrow-down"></i></span>
         </button>
 
         <button
             className="button is-primary is-small"
             onClick={() => deleteCell(id)}>
-            <span className="icon"><i className="fas fa-times"></i></span>
+            <span className="icon">delete<i className="fas fa-times"></i></span>
         </button>
     </div>
 }

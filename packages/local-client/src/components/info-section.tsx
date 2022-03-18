@@ -5,9 +5,12 @@ import React from 'react';
 import { useTypedSelector } from '../hooks/use-typed-selector';
 import { useActions } from '../hooks/use-actions';
 import { CheckboxSwitch } from './checkbox-switch';
+import { Cell } from '../state';
 
 const InfoSection: React.FC = () => {
     const isDarkTheme = useTypedSelector(({ theme: { darkTheme } }) => darkTheme);
+    const hasDemoCells = useTypedSelector(({ cells: { data } }) => !!Object.keys(data).find(keyOfId => keyOfId.startsWith('DEMO')));
+
     const { toggleTheme, createDemoNotes, removeDemoNotes } = useActions();
 
     return <div>
@@ -32,9 +35,9 @@ const InfoSection: React.FC = () => {
                     <li>find all the contents saved in the notebook.js (or a manually specified) file, in the convenient format</li>
                 </ul>
             </figure>
-            <div>
-                <button className='button is-info is-large is-rounded' onClick={createDemoNotes}>Create demo notes for illustration</button>
-                <button className='button is-info is-large is-rounded' onClick={removeDemoNotes}>Remove demo notes</button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button className='button is-info is-medium is-rounded' onClick={createDemoNotes} disabled={hasDemoCells}>Create demo notes for illustration</button>
+                <button className='button is-info is-medium is-rounded' onClick={removeDemoNotes} disabled={!hasDemoCells}>Remove demo notes</button>
             </div>
         </div>
     </div>

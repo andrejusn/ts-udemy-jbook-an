@@ -21,10 +21,17 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     const darkTheme = useTypedSelector(({ theme: { darkTheme } }) => darkTheme);
 
     const cumulativeCode = useCumulativeCode(cell.id);
-    const [editorHeight, setEditorHeight] = useState(200)
 
-    function updateHeight(heightInPx: number) {
-        setEditorHeight(heightInPx);
+    const [editorContentsHeight, setEditorContentsHeight] = useState<number | undefined>(undefined)
+    const [usersSetHeight, setUsersSetHeight] = useState<number | undefined>(undefined)
+    const [totalHeight, setTotalHeight] = useState<number>(200)
+
+    function updateContentsHeight(heightInPx: number) {
+        setEditorContentsHeight(heightInPx);
+    }
+
+    function updateUsersSetHeight(heightInPx: number) {
+        setUsersSetHeight(heightInPx);
     }
 
     const [previewInWindow, setPreviewInWindow] = useState(false);
@@ -54,14 +61,33 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cell.id, cumulativeCode, createBundle]);
 
+    // always know how much code is displayed in editor, height in pixels
+    useEffect(() => {
+        if (editorContentsHeight) {
+            setEditorContentsHeight(editorContentsHeight)
+        }
+    }, [editorContentsHeight, setEditorContentsHeight]);
+
+    // stretch the resizer with content, unless the user resized manually
+    useEffect(() => {
+        if (usersSetHeight) {
+            setTotalHeight(usersSetHeight);
+        }
+        else {
+            if (editorContentsHeight && editorContentsHeight >= 200) {
+                setTotalHeight(editorContentsHeight + 10);
+            }
+        }
+    }, [editorContentsHeight, usersSetHeight, setTotalHeight]);
+
     return <>
         <div className='action-bar-wrapper'>
             <ActionBar id={cell.id} openInNewWindow={openInNewWindow} isOpen={previewInWindow} />
         </div>
         {previewInWindow && (<WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={closeNewWindow} />)}
-        <Resizable direction={'vertical'}>
+        <Resizable direction={'vertical'} vHeight={totalHeight} vHeightRegister={updateUsersSetHeight}>
             <div style={{
-                height: `${editorHeight}px`,
+                height: `calc(100% - 10px)`,
                 display: 'flex',
                 flexDirection: 'row'
             }}>
@@ -70,7 +96,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                         initialValue={cell.content}
                         onChange={(value) => updateCell(cell.id, value)}
                         darkTheme={darkTheme}
-                        setEditorHeight={updateHeight}
+                        updateContentsHeight={updateContentsHeight}
                     />
                 </Resizable>
                 <div className='progress-wrapper'>
@@ -89,8 +115,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                 </div>
             </div>
         </Resizable>
-    </>
-        ;
+    </>;
 }
 
 export default CodeCell;

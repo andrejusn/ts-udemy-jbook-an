@@ -3,10 +3,12 @@ import { ResizableBox, ResizableBoxProps } from 'react-resizable';
 import { useState, useEffect } from 'react';
 
 interface ResizableProps {
-    direction: 'horizontal' | 'vertical'
+    direction: 'horizontal' | 'vertical',
+    vHeight?: number;
+    vHeightRegister?: (height: number) => void;
 }
 
-const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
+const Resizable: React.FC<ResizableProps> = ({ direction, children, vHeight, vHeightRegister }) => {
 
     let resizableProps: ResizableBoxProps;
 
@@ -52,10 +54,13 @@ const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
         resizableProps = {
             minConstraints: [Infinity, 24],
             maxConstraints: [Infinity, innerHeight * 0.9],
-            height: 200,
+            height: vHeight || 200,
             width: Infinity,
             resizeHandles: ['s'],
-            className: 'v-resize'
+            className: 'v-resize',
+            onResizeStop: (event, data) => {
+                if (vHeightRegister) { vHeightRegister(data.size.height); }
+            },
         };
     }
 

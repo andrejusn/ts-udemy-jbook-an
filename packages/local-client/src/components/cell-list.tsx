@@ -19,7 +19,7 @@ const CellList: React.FC = () => {
 
     return <div className='cell-list'>
         {/* order important */}
-        <AddCell forceVisible previousCellId={null} />
+        <AddCell forceVisible={!cells.length} previousCellId={null} />
         {renderedCells}
     </div>
 }

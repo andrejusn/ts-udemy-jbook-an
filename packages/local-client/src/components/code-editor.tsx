@@ -11,10 +11,10 @@ interface CodeEditorProps {
     initialValue: string;
     onChange: (value: string) => void;
     darkTheme?: boolean;
-    setEditorHeight: (heightInPx: number) => void;
+    updateContentsHeight: (heightInPx: number) => void;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkTheme, setEditorHeight }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkTheme, updateContentsHeight }) => {
     const editorRef = useRef<any>();
     const monacoRef = useRef<any>();
     const monacoJSXHighlighterRef = useRef<any>();
@@ -54,12 +54,13 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkThe
             singleQuote: true,
         }).replace(/\n$/, '');;
 
-        editorRef.current.setValue(formatted)
+        editorRef.current.setValue(formatted);
     }
 
     useEffect(() => {
-        setEditorHeight(editorRef?.current?.getScrollHeight())
-    }, [editorRef, setEditorHeight])
+        console.log(editorRef?.current?.getScrollHeight());
+        updateContentsHeight(editorRef?.current?.getScrollHeight());
+    }, [editorRef, updateContentsHeight]);
 
     return (<div className='editor-wrapper'>
         <button className="button button-format is-primary is-small" onClick={onFormatClick}>Format</button>

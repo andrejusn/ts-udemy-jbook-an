@@ -1,4 +1,39 @@
-.theme-toggler-div {
+.theme-toggler {
   display: flex;
   justify-content: flex-end;
+  position: absolute;
+  padding: 3rem 1.5rem;
+  right: 0;
+}
+
+.guide-toggle {
+  padding: 0.5rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #233343;
+}
+
+.guide-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.guide-content-info {
+  flex-basis: 60%;
+}
+
+.demo-buttons {
+  display: 'flex';
+  flex-direction: 'column';
+  justify-content: 'flex-end';
+}
+
+.demo-button {
+  margin: 0.25rem 1rem;
+  min-width: 210px;
 }

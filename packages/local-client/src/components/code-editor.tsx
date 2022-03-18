@@ -58,7 +58,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkThe
     }
 
     useEffect(() => {
-        console.log(editorRef?.current?.getScrollHeight());
         updateContentsHeight(editorRef?.current?.getScrollHeight());
     }, [editorRef, updateContentsHeight]);
 

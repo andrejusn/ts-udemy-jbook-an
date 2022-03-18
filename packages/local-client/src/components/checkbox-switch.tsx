@@ -1,4 +1,5 @@
 import './checkbox-switch.css';
+import 'bulma-switch';
 
 interface CheckboxSwitchProps {
     isDarkTheme: boolean;
@@ -8,13 +9,10 @@ interface CheckboxSwitchProps {
 export const CheckboxSwitch: React.FC<CheckboxSwitchProps> = ({ isDarkTheme, toggleTheme }) => {
 
     return (
-        <div
-        // className="switch is-small"
-        >
-            <label htmlFor='use-dark-theme'>Use dark theme</label>
-            <input id='use-dark-theme' type={'checkbox'} checked={isDarkTheme} onChange={toggleTheme} />
-            {/* <label htmlFor="use_dark_theme" data-label={`Dark ${isDarkTheme ? 'on' : 'off'}`}>Dark</label>
-            <input id="use_dark_theme" type="checkbox" name="darkTheme" checked={isDarkTheme} onChange={toggleTheme} /> */}
+        <div className="field">
+            <input id="theme-switch" type="checkbox" className="switch is-small" checked={isDarkTheme} onChange={toggleTheme} />
+            <label htmlFor="theme-switch">{isDarkTheme ? `Dark` : `Light`}</label>
         </div>
+
     )
 }

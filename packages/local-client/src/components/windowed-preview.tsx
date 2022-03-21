@@ -14,7 +14,7 @@ export interface WindowedPreviewProps {
 
 const WindowedPreview = ({ cellId, bundle, syncAsClosed }: WindowedPreviewProps) => {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    const newWindow = useRef(window);
+    const newWindow = useRef<Window>(window);
 
     // create element to pass into window
     useEffect(() => {
@@ -25,11 +25,11 @@ const WindowedPreview = ({ cellId, bundle, syncAsClosed }: WindowedPreviewProps)
     // after element is created, open a new window, attach element to it
     useEffect(() => {
         if (container) {
-            (newWindow as any).current = window.open(
+            newWindow.current = window.open(
                 "",
                 "",
                 "width=800,height=600,left=400,top=400"
-            );
+            )!!;
 
             newWindow.current.document.body.appendChild(container);
             const curWindow = newWindow.current;

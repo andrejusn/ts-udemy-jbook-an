@@ -1,5 +1,5 @@
 import './code-editor.css';
-import MonacoEditor from '@monaco-editor/react';
+import MonacoEditor, { OnChange, OnMount } from '@monaco-editor/react';
 import prettier from 'prettier';
 import parser from 'prettier/parser-babel';
 import { useEffect, useRef } from 'react';
@@ -19,8 +19,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkThe
     const monacoRef = useRef<any>();
     const monacoJSXHighlighterRef = useRef<any>();
 
-    //   editor: monaco.editor.IStandaloneCodeEditor,   monaco: Monaco,
-    const handleEditorDidMount = (editor: any, monaco: any) => {
+    const handleEditorDidMount: OnMount = (editor, monaco) => {
         editorRef.current = editor;
         monacoRef.current = monaco;
     }
@@ -38,9 +37,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkThe
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editorRef.current, monacoRef.current])
 
-    //    value: string | undefined,   ev: monaco.editor.IModelContentChangedEvent,
-    const handleChange = (value: any, event: any) => {
-        onChange(value);
+    const handleChange: OnChange = (value, event) => {
+        if (value) {
+            onChange(value);
+        }
     }
 
     const onFormatClick = () => {

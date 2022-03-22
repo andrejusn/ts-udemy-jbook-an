@@ -1,5 +1,5 @@
 import './code-editor.css';
-import MonacoEditor, { OnChange, OnMount } from '@monaco-editor/react';
+import MonacoEditor, { Monaco, OnChange, OnMount } from '@monaco-editor/react';
 import prettier from 'prettier';
 import parser from 'prettier/parser-babel';
 import { useEffect, useRef } from 'react';
@@ -15,8 +15,10 @@ interface CodeEditorProps {
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkTheme, updateContentsHeight }) => {
+    // monaco.editor.IStandaloneCodeEditor - the library does not provide a type definition, yet?
     const editorRef = useRef<any>();
-    const monacoRef = useRef<any>();
+    const monacoRef = useRef<Monaco>();
+    // MonacoJSXHighlighter - the library does not provide a type definition, yet?
     const monacoJSXHighlighterRef = useRef<any>();
 
     const handleEditorDidMount: OnMount = (editor, monaco) => {

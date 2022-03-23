@@ -36,5 +36,27 @@ export const createCellsRouter = (filename: string, dir: string) => {
     res.send({ status: 'ok' });
   });
 
+  router.post('/cell', async (req, res) => {
+    const { cell }: { cell: Cell } = req.body;
+
+    const directoryFullPath = path.join(dir, 'js_notes');
+
+    // create the directory for notes if none exists
+    try {
+      fs.mkdir(directoryFullPath);
+    } catch (e: any) {
+      if (e.code != 'EEXIST') throw e;
+    }
+
+    console.log('cell.id', cell.id);
+    await fs.writeFile(
+      directoryFullPath + cell.type + '_' + cell.id,
+      JSON.stringify(cell),
+      'utf-8'
+    );
+
+    res.send({ status: 'ok' });
+  });
+
   return router;
 };

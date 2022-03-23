@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
-import { Action } from '../actions';
+import { Action, CellAction, PersistCellAction } from '../actions';
 import { ActionType } from '../action-types';
-import { saveCells } from '../action-creators';
+import { saveCell } from '../action-creators';
 import { RootState } from '../reducers';
 
 export const persistMiddleware = ({
@@ -12,8 +12,8 @@ export const persistMiddleware = ({
   getState: () => RootState;
 }) => {
   let timer: NodeJS.Timeout;
-  return (next: (action: Action) => void) => {
-    return (action: Action) => {
+  return (next: (action: PersistCellAction) => void) => {
+    return (action: PersistCellAction) => {
       next(action);
       if (
         [
@@ -27,7 +27,10 @@ export const persistMiddleware = ({
           clearTimeout(timer);
         }
         timer = setTimeout(() => {
-          saveCells()(dispatch, getState);
+          // no id when it's a new cell being created, skipping because there is no point in saving a blank file
+          if (action.payload.id) {
+            saveCell(action.payload.id)(dispatch, getState);
+          }
         }, 250);
       }
     };

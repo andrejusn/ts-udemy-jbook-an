@@ -10,6 +10,7 @@ import {
   ToggleThemeAction,
   CreateDemoNotesAction,
   RemoveDemoNotesAction,
+  PersistCellAction,
 } from '../actions';
 import { Cell, CellTypes } from '../cell';
 import { Dispatch } from 'redux';
@@ -23,7 +24,7 @@ export const moveCell = (id: string, direction: Direction): MoveCellAction => {
 export const deleteCell = (id: string): DeleteCellAction => {
   return {
     type: ActionType.DELETE_CELL,
-    payload: id,
+    payload: { id: id },
   };
 };
 
@@ -99,6 +100,28 @@ export const saveCells = () => {
       dispatch({
         type: ActionType.SAVE_CELLS_ERROR,
         payload: err.message,
+      });
+    }
+  };
+};
+
+export const saveCell = (id: string) => {
+  return async (
+    dispatch: Dispatch<PersistCellAction>,
+    getState: () => RootState
+  ) => {
+    const {
+      cells: { data, order },
+    } = getState();
+
+    const cells = order.map((id) => data[id]);
+
+    try {
+      await axios.post('/cell', { cells });
+    } catch (err: any) {
+      dispatch({
+        type: ActionType.PERSIST_CELL_ERROR,
+        payload: { id: id, errorMessage: err.message },
       });
     }
   };

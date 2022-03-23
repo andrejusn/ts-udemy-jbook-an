@@ -1,5 +1,5 @@
 import './code-cell.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CodeEditor from './code-editor';
 import Preview from './preview'
 import Resizable from './resizable';
@@ -26,6 +26,8 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     const [usersSetHeight, setUsersSetHeight] = useState<number | undefined>(undefined)
     const [totalHeight, setTotalHeight] = useState<number>(200)
 
+    const newWindow = useRef<Window>(window);
+
     function updateContentsHeight(heightInPx: number) {
         setEditorContentsHeight(heightInPx);
     }
@@ -37,6 +39,12 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     const [previewInWindow, setPreviewInWindow] = useState(false);
 
     function openInNewWindow() {
+        newWindow.current = window.open(
+            "",
+            "",
+            "width=800,height=600,left=400,top=400"
+        )!!;
+
         setPreviewInWindow(true);
     }
 
@@ -84,7 +92,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
         <div className='action-bar-wrapper'>
             <ActionBar id={cell.id} openInNewWindow={openInNewWindow} isOpen={previewInWindow} />
         </div>
-        {previewInWindow && (<WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={closeNewWindow} />)}
+        {previewInWindow && newWindow && (<WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={closeNewWindow} windowRef={newWindow.current} />)}
         <Resizable direction={'vertical'} vHeight={totalHeight} vHeightRegister={updateUsersSetHeight}>
             <div style={{
                 height: `calc(100% - 10px)`,

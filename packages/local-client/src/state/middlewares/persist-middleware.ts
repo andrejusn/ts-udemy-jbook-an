@@ -11,7 +11,7 @@ export const persistMiddleware = ({
   dispatch: Dispatch<Action>;
   getState: () => RootState;
 }) => {
-  let timer: any;
+  let timer: NodeJS.Timeout;
   return (next: (action: Action) => void) => {
     return (action: Action) => {
       next(action);

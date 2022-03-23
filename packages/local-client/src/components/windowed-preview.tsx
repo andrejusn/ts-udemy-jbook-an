@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Preview from "./preview";
 
 export interface WindowedPreviewProps {
     syncAsClosed: () => void;
     cellId: string;
+    windowRef: Window;
     bundle: {
         loading: boolean;
         code: string;
@@ -12,37 +13,21 @@ export interface WindowedPreviewProps {
     } | undefined;
 }
 
-const WindowedPreview = ({ cellId, bundle, syncAsClosed }: WindowedPreviewProps) => {
+const WindowedPreview = ({ syncAsClosed, cellId, bundle, windowRef }: WindowedPreviewProps) => {
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    const newWindow = useRef<Window>(window);
 
     // create element to pass into window
     useEffect(() => {
         const div = document.createElement("div");
+        windowRef.document.body.appendChild(div);
+
         setContainer(div);
+
+        windowRef.addEventListener('beforeunload', () => {
+            syncAsClosed();
+        });
+        return () => windowRef.close();
     }, []);
-
-    // after element is created, open a new window, attach element to it
-    useEffect(() => {
-        if (container) {
-            newWindow.current = window.open(
-                "",
-                "",
-                "width=800,height=600,left=400,top=400"
-            )!!;
-
-            newWindow.current.document.body.appendChild(container);
-            const curWindow = newWindow.current;
-            newWindow.current.addEventListener('beforeunload', () => {
-                syncAsClosed();
-            });
-
-            return () => curWindow.close();
-        }
-
-        // buggy with syncAsClosed listed ???
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [container]);
 
     // show the component within the element
     return container && createPortal(

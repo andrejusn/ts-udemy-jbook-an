@@ -32,6 +32,14 @@ export interface UpdateCellAction {
   };
 }
 
+export interface LoadCellsFromDiskAction {
+  type: ActionType.FETCH_CELLS;
+  payload: {
+    id: string;
+    content: string;
+  };
+}
+
 export interface BundleStartAction {
   type: ActionType.BUNDLE_START;
   payload: {

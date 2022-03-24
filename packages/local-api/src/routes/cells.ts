@@ -1,7 +1,9 @@
 import express from 'express';
-import fs from 'fs/promises';
+import fs from 'fs';
+import { writeFile } from 'fs/promises';
+
 import path from 'path';
-import { serializeCells } from '../serializationFunctions';
+import { getFilename, serializeCells } from '../serializationFunctions';
 
 export interface Cell {
   id: string;
@@ -15,13 +17,17 @@ export const createCellsRouter = (filename: string, dir: string) => {
   const fullPath = path.join(dir, filename);
 
   router.get('/cells', async (req, res) => {
+    const notesParsed: string[] = [];
     try {
-      const result = await fs.readFile(fullPath, 'utf-8');
-      res.send(JSON.parse(result));
+      const files = fs.readdirSync('./', 'utf-8');
+      files.forEach((f) => {
+        if (f.startsWith('code_') || f.startsWith('text_')) {
+          notesParsed.push(JSON.parse(fs.readFileSync(f, 'utf-8')));
+        }
+      });
+      res.send(notesParsed);
     } catch (err: any) {
       if (err.code === 'ENOENT') {
-        await fs.writeFile(fullPath, '[]', 'utf-8');
-        res.send([]);
       } else {
         throw err;
       }
@@ -30,31 +36,21 @@ export const createCellsRouter = (filename: string, dir: string) => {
 
   router.post('/cells', async (req, res) => {
     const { cells }: { cells: Cell[] } = req.body;
-
-    await fs.writeFile(fullPath, serializeCells(cells), 'utf-8');
-
+    await writeFile(fullPath, serializeCells(cells), 'utf-8');
     res.send({ status: 'ok' });
   });
 
   router.post('/cell', async (req, res) => {
     const { cell }: { cell: Cell } = req.body;
+    const filename = getFilename(cell);
+    await writeFile(filename, JSON.stringify(cell), 'utf-8');
+    res.send({ status: 'ok' });
+  });
 
-    const directoryFullPath = path.join(dir, 'js_notes');
-
-    // create the directory for notes if none exists
-    try {
-      fs.mkdir(directoryFullPath);
-    } catch (e: any) {
-      if (e.code != 'EEXIST') throw e;
-    }
-
-    console.log('cell.id', cell.id);
-    await fs.writeFile(
-      directoryFullPath + cell.type + '_' + cell.id,
-      JSON.stringify(cell),
-      'utf-8'
-    );
-
+  router.delete('/cell', async (req, res) => {
+    const { cell }: { cell: Cell } = req.body;
+    const filename = getFilename(cell);
+    fs.unlinkSync(filename);
     res.send({ status: 'ok' });
   });
 

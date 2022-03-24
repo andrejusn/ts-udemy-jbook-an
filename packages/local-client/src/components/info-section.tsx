@@ -11,7 +11,7 @@ const InfoSection: React.FC = () => {
     const isDarkTheme = useTypedSelector(({ theme: { darkTheme } }) => darkTheme);
     const hasDemoCells = useTypedSelector(({ cells: { data } }) => !!Object.keys(data).find(keyOfId => keyOfId.startsWith('DEMO')));
 
-    const { toggleTheme, createDemoNotes, removeDemoNotes } = useActions();
+    const { toggleTheme, createDemoNotes, removeDemoNotes, loadNotesFromDisk } = useActions();
 
     return (
         <div>
@@ -20,8 +20,16 @@ const InfoSection: React.FC = () => {
                     <h1 className='title'>JSX Note</h1>
                     <h2 className='subtitle'>Write, preview & share React code!</h2>
                 </div>
-                <div className='theme-toggler'>
-                    <CheckboxSwitch isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
+                <div className='hero-right'>
+                    <div>
+                        <button className='button is-info is-small demo-button' onClick={loadNotesFromDisk} disabled={hasDemoCells}>
+                            <span className="icon"><i className='fa fa-upload'></i></span>
+                            <span>Load notes from disk</span>
+                        </button>
+                    </div>
+                    <div className='theme-toggler'>
+                        <CheckboxSwitch isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
+                    </div>
                 </div>
             </div >
             <div className='content'>

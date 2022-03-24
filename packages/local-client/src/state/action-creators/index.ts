@@ -64,7 +64,7 @@ export const createBundle = (cellId: string, input: string) => {
   };
 };
 
-export const fetchCells = () => {
+export const loadNotesFromDisk = () => {
   return async (dispatch: Dispatch<Action>) => {
     dispatch({
       type: ActionType.FETCH_CELLS,
@@ -105,7 +105,7 @@ export const saveCells = () => {
   };
 };
 
-export const saveCell = (id: string) => {
+export const writeCellToDisk = (id: string) => {
   return async (
     dispatch: Dispatch<PersistCellAction>,
     getState: () => RootState
@@ -114,14 +114,36 @@ export const saveCell = (id: string) => {
       cells: { data, order },
     } = getState();
 
-    const cells = order.map((id) => data[id]);
+    const cell = data[id];
 
     try {
-      await axios.post('/cell', { cells });
+      await axios.post('/cell', { cell });
     } catch (err: any) {
       dispatch({
         type: ActionType.PERSIST_CELL_ERROR,
         payload: { id: id, errorMessage: err.message },
+      });
+    }
+  };
+};
+
+export const removeCellFromDisk = (id: string) => {
+  return async (
+    dispatch: Dispatch<PersistCellAction>,
+    getState: () => RootState
+  ) => {
+    const {
+      cells: { data, order },
+    } = getState();
+
+    const cell = data[id];
+
+    try {
+      await axios.delete('/cell', { data: { cell } });
+    } catch (err: any) {
+      dispatch({
+        type: ActionType.PERSIST_CELL_ERROR,
+        payload: { id: cell.id, errorMessage: err.message },
       });
     }
   };

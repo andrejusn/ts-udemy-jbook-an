@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
-import { Action, CellAction, PersistCellAction } from '../actions';
+import { Action, FetchCellsAction, PersistCellAction } from '../actions';
 import { ActionType } from '../action-types';
-import { saveCell } from '../action-creators';
+import { removeCellFromDisk, writeCellToDisk } from '../action-creators';
 import { RootState } from '../reducers';
 
 export const persistMiddleware = ({
@@ -14,13 +14,11 @@ export const persistMiddleware = ({
   let timer: NodeJS.Timeout;
   return (next: (action: PersistCellAction) => void) => {
     return (action: PersistCellAction) => {
-      next(action);
       if (
         [
           ActionType.MOVE_CELL,
           ActionType.UPDATE_CELL,
           ActionType.INSERT_CELL_AFTER,
-          ActionType.DELETE_CELL,
         ].includes(action.type)
       ) {
         if (timer) {
@@ -29,10 +27,18 @@ export const persistMiddleware = ({
         timer = setTimeout(() => {
           // no id when it's a new cell being created, skipping because there is no point in saving a blank file
           if (action.payload.id) {
-            saveCell(action.payload.id)(dispatch, getState);
+            writeCellToDisk(action.payload.id)(dispatch, getState);
           }
         }, 250);
+      } else if (ActionType.DELETE_CELL === action.type) {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        if (action.payload.id) {
+          removeCellFromDisk(action.payload.id)(dispatch, getState);
+        }
       }
+      next(action);
     };
   };
 };

@@ -28,6 +28,7 @@
     "axios": "0.21.1",
     "bulma-switch": "^2.0.4",
     "bulmaswatch": "^0.8.1",
+    "esbuild": "^0.14.27",
     "esbuild-wasm": "0.8.27",
     "immer": "^8.0.0",
     "localforage": "^1.10.0",
@@ -68,5 +69,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "node": "^16.13.2"
   }
 }

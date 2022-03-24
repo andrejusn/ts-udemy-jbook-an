@@ -1,4 +1,6 @@
 import * as esbuild from 'esbuild-wasm';
+import * as ts from 'typescript';
+
 import axios from 'axios';
 import localForage from 'localforage';
 
@@ -9,12 +11,20 @@ export const fetchPlugin = (inputCode: string) => {
     name: 'fetch-plugin',
     setup(build: esbuild.PluginBuild) {
       build.onLoad({ filter: /(^index\.js$)/ }, async (args: any) => {
+        console.log(inputCode);
+
+        let result = ts.transpileModule(inputCode, {
+          compilerOptions: { module: ts.ModuleKind.CommonJS },
+        });
+        console.log(JSON.stringify(result));
+
         return {
-          loader: 'jsx',
+          loader: 'tsx',
           contents: inputCode,
         };
       });
 
+      // get library from cache, if present
       build.onLoad({ filter: /.*/ }, async (args: any) => {
         const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(
           args.path
@@ -24,6 +34,7 @@ export const fetchPlugin = (inputCode: string) => {
         }
       });
 
+      // put into <style> tag, if the library is .css
       build.onLoad({ filter: /.css$/ }, async (args: any) => {
         const { data, request } = await axios.get(args.path);
         const escaped = data
@@ -37,11 +48,12 @@ export const fetchPlugin = (inputCode: string) => {
           `;
 
         const result: esbuild.OnLoadResult = {
-          loader: 'jsx',
+          loader: 'tsx',
           contents,
           resolveDir: new URL('./', request.responseURL).pathname,
         };
 
+        // cache the library
         await fileCache.setItem(args.path, result);
 
         return result;
@@ -49,9 +61,10 @@ export const fetchPlugin = (inputCode: string) => {
 
       build.onLoad({ filter: /.*/ }, async (args: any) => {
         const { data, request } = await axios.get(args.path);
+        console.log(data);
 
         const result: esbuild.OnLoadResult = {
-          loader: 'jsx',
+          loader: 'tsx',
           contents: data,
           resolveDir: new URL('./', request.responseURL).pathname,
         };

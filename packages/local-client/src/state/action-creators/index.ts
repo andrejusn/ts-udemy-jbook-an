@@ -10,6 +10,7 @@ import {
   ToggleThemeAction,
   CreateDemoNotesAction,
   RemoveDemoNotesAction,
+  PersistCellAction,
 } from '../actions';
 import { Cell, CellTypes } from '../cell';
 import { Dispatch } from 'redux';
@@ -23,7 +24,7 @@ export const moveCell = (id: string, direction: Direction): MoveCellAction => {
 export const deleteCell = (id: string): DeleteCellAction => {
   return {
     type: ActionType.DELETE_CELL,
-    payload: id,
+    payload: { id: id },
   };
 };
 
@@ -63,7 +64,7 @@ export const createBundle = (cellId: string, input: string) => {
   };
 };
 
-export const fetchCells = () => {
+export const loadNotesFromDisk = () => {
   return async (dispatch: Dispatch<Action>) => {
     dispatch({
       type: ActionType.FETCH_CELLS,
@@ -99,6 +100,50 @@ export const saveCells = () => {
       dispatch({
         type: ActionType.SAVE_CELLS_ERROR,
         payload: err.message,
+      });
+    }
+  };
+};
+
+export const writeCellToDisk = (id: string) => {
+  return async (
+    dispatch: Dispatch<PersistCellAction>,
+    getState: () => RootState
+  ) => {
+    const {
+      cells: { data, order },
+    } = getState();
+
+    const cell = data[id];
+
+    try {
+      await axios.post('/cell', { cell });
+    } catch (err: any) {
+      dispatch({
+        type: ActionType.PERSIST_CELL_ERROR,
+        payload: { id: id, errorMessage: err.message },
+      });
+    }
+  };
+};
+
+export const removeCellFromDisk = (id: string) => {
+  return async (
+    dispatch: Dispatch<PersistCellAction>,
+    getState: () => RootState
+  ) => {
+    const {
+      cells: { data, order },
+    } = getState();
+
+    const cell = data[id];
+
+    try {
+      await axios.delete('/cell', { data: { cell } });
+    } catch (err: any) {
+      dispatch({
+        type: ActionType.PERSIST_CELL_ERROR,
+        payload: { id: cell.id, errorMessage: err.message },
       });
     }
   };

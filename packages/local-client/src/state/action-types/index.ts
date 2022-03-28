@@ -12,4 +12,5 @@ export enum ActionType {
   TOGGLE_THEME = 'toggle_theme',
   CREATE_DEMO_NOTES = 'create_demo_notes',
   REMOVE_DEMO_NOTES = 'remove_demo_notes',
+  PERSIST_CELL_ERROR = 'persist_cell_error',
 }

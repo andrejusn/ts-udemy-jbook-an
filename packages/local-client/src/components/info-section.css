@@ -1,9 +1,20 @@
-.theme-toggler {
+.hero-right {
   display: flex;
   justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
   position: absolute;
   padding: 3rem 1.5rem;
   right: 0;
+}
+
+.hero-right button {
+  margin-right: 0;
+  margin-bottom: 1rem;
+}
+
+.theme-toggler {
+  display: flex;
 }
 
 .guide-toggle {

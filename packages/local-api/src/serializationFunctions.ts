@@ -16,3 +16,11 @@ export function serializeCells(cells: Cell[]): string {
 
   return result;
 }
+
+function getFilenameExtension(cell: Cell) {
+  return cell.type === 'code' ? '.jsx' : '.txt';
+}
+
+export function getFilename(cell: Cell): string {
+  return cell.type + '_' + cell.id + getFilenameExtension(cell);
+}

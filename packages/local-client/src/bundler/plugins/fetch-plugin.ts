@@ -34,8 +34,7 @@ export const fetchPlugin = (inputCode: string) => {
         }
       });
 
-      // put into <style> tag, if the library is .css
-      build.onLoad({ filter: /.css$/ }, async (args: any) => {
+      build.onLoad({ filter: /.css$/ }, async (args: esbuild.OnLoadArgs) => {
         const { data, request } = await axios.get(args.path);
         const escaped = data
           .replace(/\n/g, '')
@@ -59,7 +58,7 @@ export const fetchPlugin = (inputCode: string) => {
         return result;
       });
 
-      build.onLoad({ filter: /.*/ }, async (args: any) => {
+      build.onLoad({ filter: /.*/ }, async (args: esbuild.OnLoadArgs) => {
         const { data, request } = await axios.get(args.path);
         console.log(data);
 

@@ -11,7 +11,9 @@ export interface MoveCellAction {
 
 export interface DeleteCellAction {
   type: ActionType.DELETE_CELL;
-  payload: string;
+  payload: {
+    id: string;
+  };
 }
 
 export interface InsertCellAfterAction {
@@ -24,6 +26,14 @@ export interface InsertCellAfterAction {
 
 export interface UpdateCellAction {
   type: ActionType.UPDATE_CELL;
+  payload: {
+    id: string;
+    content: string;
+  };
+}
+
+export interface LoadCellsFromDiskAction {
+  type: ActionType.FETCH_CELLS;
   payload: {
     id: string;
     content: string;
@@ -78,11 +88,21 @@ export interface RemoveDemoNotesAction {
   type: ActionType.REMOVE_DEMO_NOTES;
 }
 
-export type Action =
+export interface PersistCellErrorAction {
+  type: ActionType.PERSIST_CELL_ERROR;
+  payload: { id: string; errorMessage: string };
+}
+
+export type CellAction =
   | MoveCellAction
   | DeleteCellAction
   | InsertCellAfterAction
-  | UpdateCellAction
+  | UpdateCellAction;
+
+export type PersistCellAction = CellAction | PersistCellErrorAction;
+
+export type Action =
+  | PersistCellAction
   | BundleStartAction
   | BundleCompleteAction
   | FetchCellsAction

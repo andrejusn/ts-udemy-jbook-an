@@ -38,18 +38,19 @@ const html = `
 `;
 
 const Preview: React.FC<PreviewProps> = ({ id, code, bundlingStatus, isFullWindow }) => {
-  const iframe = useRef<any>();
+  const iframe = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
-    iframe.current.srcdoc = html;
+    if (iframe.current) {
+      iframe.current.srcdoc = html;
 
-    setTimeout(() => {
-      if (iframe.current) {
-        iframe.current.contentWindow.postMessage(code, '*');
-      }
-      // increased delay so that Firefox is done with window mutation in time, Chrome was good with 50
-    }, 500);
-
+      setTimeout(() => {
+        if (iframe.current && iframe.current.contentWindow) {
+          iframe.current.contentWindow.postMessage(code, '*');
+        }
+        // increased delay so that Firefox is done with window mutation in time, Chrome was good with 50
+      }, 500);
+    }
   }, [code]);
 
   const styleByWindowed = isFullWindow ? { width: '100%', height: '97vh', border: 'none' } : undefined

@@ -33,8 +33,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkThe
             );
             monacoJSXHighlighterRef.current.highlightOnDidChangeModelContent();
             monacoJSXHighlighterRef.current.addJSXCommentCommand();
-            monacoJSXHighlighterRef.current.addJSXCommentCommand();
-
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editorRef.current, monacoRef.current])

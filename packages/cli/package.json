@@ -1,6 +1,6 @@
 {
   "name": "jsnote-an",
-  "version": "1.2.1-alpha.0",
+  "version": "1.2.1",
   "description": "",
   "bin": "dist/index.js",
   "publishConfig": {
@@ -17,10 +17,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@jsnote-an/local-client": "^1.2.1-alpha.0"
+    "@jsnote-an/local-client": "^1.2.1"
   },
   "devDependencies": {
-    "@jsnote-an/local-api": "^1.2.1-alpha.0",
+    "@jsnote-an/local-api": "^1.2.1",
     "@types/node": "^17.0.21",
     "commander": "^9.0.0",
     "esbuild": "0.8.26",

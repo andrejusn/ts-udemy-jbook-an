@@ -1,5 +1,4 @@
 import * as esbuild from 'esbuild-wasm';
-import * as ts from 'typescript';
 
 import axios from 'axios';
 import localForage from 'localforage';
@@ -10,19 +9,15 @@ export const fetchPlugin = (inputCode: string) => {
   return {
     name: 'fetch-plugin',
     setup(build: esbuild.PluginBuild) {
-      build.onLoad({ filter: /(^index\.js$)/ }, async (args: any) => {
-        console.log(inputCode);
-
-        let result = ts.transpileModule(inputCode, {
-          compilerOptions: { module: ts.ModuleKind.CommonJS },
-        });
-        console.log(JSON.stringify(result));
-
-        return {
-          loader: 'tsx',
-          contents: inputCode,
-        };
-      });
+      build.onLoad(
+        { filter: /(^index\.js$)/ },
+        async (args: esbuild.OnLoadArgs) => {
+          return {
+            loader: 'tsx',
+            contents: inputCode,
+          };
+        }
+      );
 
       // get library from cache, if present
       build.onLoad({ filter: /.*/ }, async (args: any) => {
@@ -60,7 +55,6 @@ export const fetchPlugin = (inputCode: string) => {
 
       build.onLoad({ filter: /.*/ }, async (args: esbuild.OnLoadArgs) => {
         const { data, request } = await axios.get(args.path);
-        console.log(data);
 
         const result: esbuild.OnLoadResult = {
           loader: 'tsx',

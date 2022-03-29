@@ -1,6 +1,7 @@
 import * as esbuild from 'esbuild-wasm';
 import { unpkgPathPlugin } from './plugins/unpkg_path_plugin';
 import { fetchPlugin } from './plugins/fetch-plugin';
+import { typecheckPlugin } from './plugins/typecheck-plugin';
 
 let service: esbuild.Service;
 
@@ -17,7 +18,11 @@ const bundle = async (rawCode: string) => {
       entryPoints: ['index.js'],
       bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin(), fetchPlugin(rawCode)],
+      plugins: [
+        unpkgPathPlugin(),
+        fetchPlugin(rawCode),
+        typecheckPlugin(rawCode),
+      ],
       define: {
         'process.env.NODE_ENV': '"production"',
         global: 'window',

@@ -28,11 +28,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, darkThe
 
     useEffect(() => {
         if (editorRef.current && monacoRef.current) {
-            monacoJSXHighlighterRef.current = new MonacoJSXHighlighter(
-                monacoRef.current, parse, traverse, editorRef.current
-            );
-            monacoJSXHighlighterRef.current.highlightOnDidChangeModelContent();
-            monacoJSXHighlighterRef.current.addJSXCommentCommand();
+            // monacoJSXHighlighterRef.current = new MonacoJSXHighlighter(
+            //     monacoRef.current, parse, traverse, editorRef.current
+            // );
+            // monacoJSXHighlighterRef.current.highlightOnDidChangeModelContent();
+            // monacoJSXHighlighterRef.current.addJSXCommentCommand();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editorRef.current, monacoRef.current])

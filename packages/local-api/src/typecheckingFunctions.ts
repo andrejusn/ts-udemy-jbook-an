@@ -32,16 +32,15 @@ function diagnosticsToCustomFormat(
       message: message,
       location: `(${filename}:${line}:${character})`,
     };
-    console.log(info);
 
     customDiagnostics.push(info);
   }
   return customDiagnostics;
 }
 
-export function checkCode(code: string): CustomDiagnostic[] {
+export function checkCode(id: string, code: string): CustomDiagnostic[] {
   const file: File = {
-    fileName: 'test.ts',
+    fileName: `${id}.ts`,
     content: code,
   };
 

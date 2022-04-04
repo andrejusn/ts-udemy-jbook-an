@@ -4,6 +4,7 @@ import { writeFile } from 'fs/promises';
 
 import path from 'path';
 import { getFilename, serializeCells } from '../serializationFunctions';
+import { checkCode } from '../typecheckingFunctions';
 
 export interface Cell {
   id: string;
@@ -42,9 +43,12 @@ export const createCellsRouter = (filename: string, dir: string) => {
 
   router.post('/cell', async (req, res) => {
     const { cell }: { cell: Cell } = req.body;
+
     const filename = getFilename(cell);
     await writeFile(filename, JSON.stringify(cell), 'utf-8');
-    res.send({ status: 'ok' });
+
+    const diags = await checkCode(cell.id, cell.content);
+    res.send({ status: 'ok', data: diags });
   });
 
   router.delete('/cell', async (req, res) => {
@@ -53,6 +57,11 @@ export const createCellsRouter = (filename: string, dir: string) => {
     fs.unlinkSync(filename);
     res.send({ status: 'ok' });
   });
+
+  // router.post('/typecheck', async (req, res) => {
+  //   console.log('req :', req);
+  //   res.send({ status: 'ok' });
+  // });
 
   return router;
 };

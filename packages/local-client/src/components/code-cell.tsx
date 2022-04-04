@@ -91,6 +91,11 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     return <>
         <div className='action-bar-wrapper'>
             <ActionBar id={cell.id} openInNewWindow={openInNewWindow} isOpen={previewInWindow} />
+            {cell.tcheck?.map(t => {
+                return <p key={t.message}>
+                    {t.message} - {t.location}
+                </p>
+            })}
         </div>
         {previewInWindow && newWindow && (<WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={closeNewWindow} windowRef={newWindow.current} />)}
         <Resizable direction={'vertical'} vHeight={totalHeight} vHeightRegister={updateUsersSetHeight}>
@@ -99,6 +104,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                 display: 'flex',
                 flexDirection: 'row'
             }}>
+
                 <Resizable direction='horizontal'>
                     <CodeEditor
                         initialValue={cell.content}

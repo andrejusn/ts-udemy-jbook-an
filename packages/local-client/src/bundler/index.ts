@@ -1,7 +1,6 @@
 import * as esbuild from 'esbuild-wasm';
 import { unpkgPathPlugin } from './plugins/unpkg_path_plugin';
 import { fetchPlugin } from './plugins/fetch-plugin';
-import { typecheckPlugin } from './plugins/typecheck-plugin';
 
 let service: esbuild.Service;
 

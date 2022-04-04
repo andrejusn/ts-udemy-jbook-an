@@ -12,7 +12,7 @@ import {
   RemoveDemoNotesAction,
   PersistCellAction,
 } from '../actions';
-import { Cell, CellTypes } from '../cell';
+import { Cell, CellTypes, TypecheckData } from '../cell';
 import { Dispatch } from 'redux';
 import bundle from '../../bundler';
 import { RootState } from '../reducers';
@@ -41,10 +41,14 @@ export const insertCellAfter = (
   };
 };
 
-export const updateCell = (id: string, content: string): UpdateCellAction => {
+export const updateCell = (
+  id: string,
+  content: string,
+  tcheck?: TypecheckData[]
+): UpdateCellAction => {
   return {
     type: ActionType.UPDATE_CELL,
-    payload: { id, content },
+    payload: { id, content, tcheck },
   };
 };
 
@@ -105,25 +109,35 @@ export const saveCells = () => {
   };
 };
 
-export const writeCellToDisk = (id: string) => {
+export const writeCellToDiskAndGetTypeCheckData = (id: string) => {
   return async (
     dispatch: Dispatch<PersistCellAction>,
     getState: () => RootState
   ) => {
     const {
-      cells: { data, order },
+      cells: { data },
     } = getState();
 
     const cell = data[id];
 
-    try {
-      await axios.post('/cell', { cell });
-    } catch (err: any) {
-      dispatch({
-        type: ActionType.PERSIST_CELL_ERROR,
-        payload: { id: id, errorMessage: err.message },
+    axios
+      .post('/cell', { cell })
+      .then((response) => {
+        dispatch({
+          type: ActionType.UPDATE_CELL,
+          payload: {
+            id: cell.id,
+            content: cell.content,
+            tcheck: response.data.data,
+          },
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: ActionType.PERSIST_CELL_ERROR,
+          payload: { id: id, errorMessage: err.message },
+        });
       });
-    }
   };
 };
 
@@ -133,7 +147,7 @@ export const removeCellFromDisk = (id: string) => {
     getState: () => RootState
   ) => {
     const {
-      cells: { data, order },
+      cells: { data },
     } = getState();
 
     const cell = data[id];
@@ -148,6 +162,30 @@ export const removeCellFromDisk = (id: string) => {
     }
   };
 };
+
+// export const typecheckCode = (id: string) => {
+//   return async (
+//     dispatch: Dispatch<PersistCellAction>,
+//     getState: () => RootState
+//   ) => {
+//     const {
+//       cells: { data },
+//     } = getState();
+
+//     console.log('typch');
+//     const cell = data[id];
+
+//     try {
+//       await axios.post('/typecheck', { cell });
+//       console.log(await axios.post('/typecheck', { cell }));
+//     } catch (err: any) {
+//       dispatch({
+//         type: ActionType.TYPECHECK_CODE_ERROR,
+//         payload: { id: id, errorMessage: err.message },
+//       });
+//     }
+//   };
+// };
 
 export const toggleTheme = (): ToggleThemeAction => {
   return {

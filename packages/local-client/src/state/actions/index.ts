@@ -1,5 +1,5 @@
 import { ActionType } from '../action-types';
-import { Cell, CellTypes } from '../cell';
+import { Cell, CellTypes, TypecheckData } from '../cell';
 
 export interface MoveCellAction {
   type: ActionType.MOVE_CELL;
@@ -29,6 +29,7 @@ export interface UpdateCellAction {
   payload: {
     id: string;
     content: string;
+    tcheck?: TypecheckData[];
   };
 }
 
@@ -93,13 +94,21 @@ export interface PersistCellErrorAction {
   payload: { id: string; errorMessage: string };
 }
 
+export interface TypecheckCodeErrorAction {
+  type: ActionType.TYPECHECK_CODE_ERROR;
+  payload: { id: string; errorMessage: string };
+}
+
 export type CellAction =
   | MoveCellAction
   | DeleteCellAction
   | InsertCellAfterAction
   | UpdateCellAction;
 
-export type PersistCellAction = CellAction | PersistCellErrorAction;
+export type PersistCellAction =
+  | CellAction
+  | PersistCellErrorAction
+  | TypecheckCodeErrorAction;
 
 export type Action =
   | PersistCellAction

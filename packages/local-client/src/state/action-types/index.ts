@@ -13,4 +13,5 @@ export enum ActionType {
   CREATE_DEMO_NOTES = 'create_demo_notes',
   REMOVE_DEMO_NOTES = 'remove_demo_notes',
   PERSIST_CELL_ERROR = 'persist_cell_error',
+  TYPECHECK_CODE_ERROR = 'typecheck_code_error',
 }

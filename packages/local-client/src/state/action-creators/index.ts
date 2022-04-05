@@ -152,12 +152,16 @@ export const removeCellFromDisk = (id: string) => {
 
 export const typecheckCode = (id: string, content: string) => {
   return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    dispatch({
+      type: ActionType.TYPECHECK_CODE_START,
+      payload: { id, content },
+    });
+
     const {
       cells: { data },
     } = getState();
 
     const cell = data[id];
-    console.log('cell', cell);
 
     axios
       .post('/typecheck', { cell })
@@ -168,7 +172,7 @@ export const typecheckCode = (id: string, content: string) => {
           type: ActionType.TYPECHECK_CODE_COMPLETE,
           payload: {
             id: cell.id,
-            diags: response.data.data,
+            diags: response.data.data.diags,
           },
         });
       })

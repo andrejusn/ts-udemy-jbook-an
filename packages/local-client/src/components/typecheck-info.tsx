@@ -12,14 +12,25 @@ const TypecheckInfo: React.FC<CodeCellProps> = ({ cell }) => {
 
     const typecheckData = useTypedSelector((state) => state.typecheck[cell.id]);
 
-
-    console.log(typecheckData)
     return <>
-        {typecheckData?.diags?.map(t => {
-            return <p key={t.message}>
-                {t.message} - {t.location}
-            </p>
-        })}
+        <h6>Typecheck info:</h6>
+        {typecheckData?.loading ?
+            (
+                <div className='progress-cover'>
+                    <progress
+                        className='progress is-small is-primary'
+                        max="100"
+                    >
+                        Loading
+                    </progress>
+                </div>
+            )
+            :
+            typecheckData?.diags?.map(t => {
+                return <p key={t.message}>
+                    {t.message} - {t.location}
+                </p>
+            })}
     </>;
 }
 

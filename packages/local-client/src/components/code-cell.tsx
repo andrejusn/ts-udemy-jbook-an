@@ -93,7 +93,6 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     return <>
         <div className='action-bar-wrapper'>
             <ActionBar id={cell.id} openInNewWindow={openInNewWindow} isOpen={previewInWindow} />
-            <TypecheckInfo cell={cell} />
         </div>
         {previewInWindow && newWindow && (<WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={closeNewWindow} windowRef={newWindow.current} />)}
         <Resizable direction={'vertical'} vHeight={totalHeight} vHeightRegister={updateUsersSetHeight}>
@@ -127,6 +126,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                 </div>
             </div>
         </Resizable>
+        <TypecheckInfo cell={cell} />
     </>;
 }
 

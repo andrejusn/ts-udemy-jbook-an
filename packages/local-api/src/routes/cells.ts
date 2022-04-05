@@ -47,8 +47,7 @@ export const createCellsRouter = (filename: string, dir: string) => {
     const filename = getFilename(cell);
     await writeFile(filename, JSON.stringify(cell), 'utf-8');
 
-    const diags = await checkCode(cell.id, cell.content);
-    res.send({ status: 'ok', data: diags });
+    res.send({ status: 'ok' });
   });
 
   router.delete('/cell', async (req, res) => {
@@ -58,10 +57,13 @@ export const createCellsRouter = (filename: string, dir: string) => {
     res.send({ status: 'ok' });
   });
 
-  // router.post('/typecheck', async (req, res) => {
-  //   console.log('req :', req);
-  //   res.send({ status: 'ok' });
-  // });
+  router.post('/typecheck', async (req, res) => {
+    const { cell }: { cell: Cell } = req.body;
+
+    const diags = await checkCode(cell.id, cell.content);
+
+    res.send({ status: 'ok', data: { cellId: cell.id, diags } });
+  });
 
   return router;
 };

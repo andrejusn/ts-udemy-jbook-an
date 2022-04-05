@@ -16,6 +16,7 @@ import { Cell, CellTypes, TypecheckData } from '../cell';
 import { Dispatch } from 'redux';
 import bundle from '../../bundler';
 import { RootState } from '../reducers';
+import CellList from '../../components/cell-list';
 
 export const moveCell = (id: string, direction: Direction): MoveCellAction => {
   return { type: ActionType.MOVE_CELL, payload: { id, direction } };
@@ -41,14 +42,10 @@ export const insertCellAfter = (
   };
 };
 
-export const updateCell = (
-  id: string,
-  content: string,
-  tcheck?: TypecheckData[]
-): UpdateCellAction => {
+export const updateCell = (id: string, content: string): UpdateCellAction => {
   return {
     type: ActionType.UPDATE_CELL,
-    payload: { id, content, tcheck },
+    payload: { id, content },
   };
 };
 
@@ -109,7 +106,7 @@ export const saveCells = () => {
   };
 };
 
-export const writeCellToDiskAndGetTypeCheckData = (id: string) => {
+export const writeCellToDisk = (id: string) => {
   return async (
     dispatch: Dispatch<PersistCellAction>,
     getState: () => RootState
@@ -120,24 +117,14 @@ export const writeCellToDiskAndGetTypeCheckData = (id: string) => {
 
     const cell = data[id];
 
-    axios
-      .post('/cell', { cell })
-      .then((response) => {
-        dispatch({
-          type: ActionType.UPDATE_CELL,
-          payload: {
-            id: cell.id,
-            content: cell.content,
-            tcheck: response.data.data,
-          },
-        });
-      })
-      .catch((err) => {
-        dispatch({
-          type: ActionType.PERSIST_CELL_ERROR,
-          payload: { id: id, errorMessage: err.message },
-        });
+    try {
+      await axios.post('/cell', { cell });
+    } catch (err: any) {
+      dispatch({
+        type: ActionType.PERSIST_CELL_ERROR,
+        payload: { id: id, errorMessage: err.message },
       });
+    }
   };
 };
 
@@ -163,29 +150,36 @@ export const removeCellFromDisk = (id: string) => {
   };
 };
 
-// export const typecheckCode = (id: string) => {
-//   return async (
-//     dispatch: Dispatch<PersistCellAction>,
-//     getState: () => RootState
-//   ) => {
-//     const {
-//       cells: { data },
-//     } = getState();
+export const typecheckCode = (id: string, content: string) => {
+  return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    const {
+      cells: { data },
+    } = getState();
 
-//     console.log('typch');
-//     const cell = data[id];
+    const cell = data[id];
+    console.log('cell', cell);
 
-//     try {
-//       await axios.post('/typecheck', { cell });
-//       console.log(await axios.post('/typecheck', { cell }));
-//     } catch (err: any) {
-//       dispatch({
-//         type: ActionType.TYPECHECK_CODE_ERROR,
-//         payload: { id: id, errorMessage: err.message },
-//       });
-//     }
-//   };
-// };
+    axios
+      .post('/typecheck', { cell })
+      .then((response) => {
+        console.log('typch response', response);
+
+        dispatch({
+          type: ActionType.TYPECHECK_CODE_COMPLETE,
+          payload: {
+            id: cell.id,
+            diags: response.data.data,
+          },
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: ActionType.TYPECHECK_CODE_ERROR,
+          payload: { id: id, errorMessage: err.message },
+        });
+      });
+  };
+};
 
 export const toggleTheme = (): ToggleThemeAction => {
   return {

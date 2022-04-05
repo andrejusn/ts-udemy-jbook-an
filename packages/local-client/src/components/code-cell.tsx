@@ -9,6 +9,7 @@ import { useTypedSelector } from '../hooks/use-typed-selector'
 import { useCumulativeCode } from '../hooks/use-cumulative-code'
 import ActionBar from './action-bar';
 import WindowedPreview from './windowed-preview';
+import TypecheckInfo from './typecheck-info';
 
 interface CodeCellProps {
     cell: Cell
@@ -88,14 +89,11 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
         }
     }, [editorContentsHeight, usersSetHeight, setTotalHeight]);
 
+
     return <>
         <div className='action-bar-wrapper'>
             <ActionBar id={cell.id} openInNewWindow={openInNewWindow} isOpen={previewInWindow} />
-            {cell.tcheck?.map(t => {
-                return <p key={t.message}>
-                    {t.message} - {t.location}
-                </p>
-            })}
+            <TypecheckInfo cell={cell} />
         </div>
         {previewInWindow && newWindow && (<WindowedPreview cellId={cell.id} bundle={bundle} syncAsClosed={closeNewWindow} windowRef={newWindow.current} />)}
         <Resizable direction={'vertical'} vHeight={totalHeight} vHeightRegister={updateUsersSetHeight}>

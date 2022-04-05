@@ -1,10 +1,7 @@
 import { Dispatch } from 'redux';
 import { Action, PersistCellAction } from '../actions';
 import { ActionType } from '../action-types';
-import {
-  removeCellFromDisk,
-  writeCellToDiskAndGetTypeCheckData,
-} from '../action-creators';
+import { removeCellFromDisk, writeCellToDisk } from '../action-creators';
 import { RootState } from '../reducers';
 
 export const persistMiddleware = ({
@@ -30,11 +27,7 @@ export const persistMiddleware = ({
         timer = setTimeout(() => {
           // no id when it's a new cell being created, skipping because there is no point in saving a blank file
           if (action.payload.id) {
-            // typecheckCode(action.payload.id)(dispatch, getState);
-            writeCellToDiskAndGetTypeCheckData(action.payload.id)(
-              dispatch,
-              getState
-            );
+            writeCellToDisk(action.payload.id)(dispatch, getState);
           }
         }, 250);
       } else if (ActionType.DELETE_CELL === action.type) {

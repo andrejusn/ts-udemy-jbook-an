@@ -90,9 +90,8 @@ const reducer = produce(
         return state;
 
       case ActionType.UPDATE_CELL:
-        const { id, content, tcheck } = action.payload;
+        const { id, content } = action.payload;
         state.data[id].content = content;
-        state.data[id].tcheck = tcheck;
 
         return state;
 

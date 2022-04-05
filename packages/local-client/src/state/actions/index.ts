@@ -29,7 +29,6 @@ export interface UpdateCellAction {
   payload: {
     id: string;
     content: string;
-    tcheck?: TypecheckData[];
   };
 }
 
@@ -94,6 +93,22 @@ export interface PersistCellErrorAction {
   payload: { id: string; errorMessage: string };
 }
 
+export interface TypecheckStartAction {
+  type: ActionType.TYPECHECK_CODE_START;
+  payload: { id: string; content: string };
+}
+
+export interface TypecheckCompleteAction {
+  type: ActionType.TYPECHECK_CODE_COMPLETE;
+  payload: {
+    id: string;
+    diags: {
+      message: string;
+      location: string;
+    }[];
+  };
+}
+
 export interface TypecheckCodeErrorAction {
   type: ActionType.TYPECHECK_CODE_ERROR;
   payload: { id: string; errorMessage: string };
@@ -105,9 +120,10 @@ export type CellAction =
   | InsertCellAfterAction
   | UpdateCellAction;
 
-export type PersistCellAction =
-  | CellAction
-  | PersistCellErrorAction
+export type PersistCellAction = CellAction | PersistCellErrorAction;
+export type TypecheckAction =
+  | TypecheckStartAction
+  | TypecheckCompleteAction
   | TypecheckCodeErrorAction;
 
 export type Action =
@@ -120,6 +136,7 @@ export type Action =
   | SaveCellsErrorAction
   | ToggleThemeAction
   | CreateDemoNotesAction
-  | RemoveDemoNotesAction;
+  | RemoveDemoNotesAction
+  | TypecheckAction;
 
 export type Direction = 'up' | 'down';
